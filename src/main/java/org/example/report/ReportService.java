@@ -14,10 +14,10 @@ public class ReportService {
         return new ReportService(csvStrategy);
     }
 
-    public <T> void write(String fileName, List<T> dataList){
-        csvStrategy.writeToCsv(fileName, dataList);
+    public <T> void write(List<T> dataList){
+        csvStrategy.writeToCsv(dataList);
     }
-    public<T> List<T> read (String fileName){
-        return csvStrategy.readFromCsv(fileName);
+    public<T> List<T> read (){
+        return csvStrategy.readFromCsv();
     }
 }

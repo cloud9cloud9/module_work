@@ -9,7 +9,9 @@ import org.example.Entity.Operation;
 import org.example.Entity.OperationType;
 import org.example.Entity.User;
 import org.example.report.ReportService;
+import org.example.report.strategy.AccountCsvStrategy;
 import org.example.report.strategy.CsvStrategy;
+import org.example.report.strategy.OperationCsvStrategy;
 import org.example.report.strategy.UserCsvStrategy;
 
 import java.math.BigDecimal;
@@ -71,12 +73,10 @@ public class Main {
         System.out.println("fatch by amout over that " + operationDao.fetchOperationsWithAmountGreaterThan(1L, 299));
 
 
-        ReportService reportService = ReportService.createReportService(new UserCsvStrategy());
-//        reportService.write("C:\\Users\\Vladick\\IdeaProjects\\modulework\\src" +
-//                        "\\main\\resources\\user.csv",
-//                userDao.getAll());
-        System.out.println(reportService.read("C:\\Users\\Vladick\\IdeaProjects\\modulework\\src" +
-                "\\main\\resources\\user.csv"));
+        ReportService reportService = ReportService.createReportService(new OperationCsvStrategy());
+        reportService.write(operationDao.filterOperationByOperationType(1l, OperationType.EXPENSE));
+//        System.out.println(reportService.read("C:\\Users\\Vladick\\IdeaProjects\\modulework\\src" +
+//                "\\main\\resources\\account.csv"));
 
     }
 }

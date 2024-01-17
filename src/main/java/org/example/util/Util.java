@@ -7,7 +7,6 @@ import jakarta.persistence.Persistence;
 import org.example.Exception.DaoException;
 
 import java.util.function.Consumer;
-import java.util.function.Function;
 
 public class Util {
 
