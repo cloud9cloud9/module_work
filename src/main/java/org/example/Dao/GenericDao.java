@@ -2,13 +2,12 @@ package org.example.Dao;
 
 import jakarta.persistence.EntityManager;
 import jakarta.persistence.EntityTransaction;
-import org.example.Exception.DaoException;
 
 import java.util.function.Consumer;
 
 import static org.example.util.Util.getEntityManager;
 
-public abstract class GenericDao<T> implements Dao<T> {
+public abstract class GenericDao<T> {
     private final EntityManager em;
 
     public GenericDao() {

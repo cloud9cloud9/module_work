@@ -1,20 +1,13 @@
 package org.example.Dao;
 
 import jakarta.persistence.EntityManager;
-import jakarta.persistence.EntityTransaction;
 import org.example.Entity.Account;
-import org.example.Entity.Operation;
-import org.example.Entity.User;
-import org.example.Exception.DaoException;
 import org.example.util.Util;
-
-import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
-import java.util.function.Consumer;
 
-public class AccountDao extends GenericDao<Account> {
+public class AccountDao extends GenericDao<Account> implements Dao<Account> {
     private final EntityManager em;
 
     public AccountDao() {
@@ -62,24 +55,5 @@ public class AccountDao extends GenericDao<Account> {
             return true;
         }
         return false;
-    }
-
-    public void createNewAccount(Account account, Long userId) {
-        inSession(em -> {
-            User user = em.find(User.class, userId);
-            account.setUser(user);
-            em.persist(account);
-        });
-    }
-
-    public List<Account> getAccountByUserId(Long userId) {
-        List<Account> accountList = new ArrayList<>();
-        inSession(em -> {
-            List<Account> accounts = em.createQuery("FROM Account u WHERE u.user.id = :userId", Account.class)
-                    .setParameter("userId", userId)
-                    .getResultList();
-            accountList.addAll(accounts);
-        });
-        return accountList;
     }
 }

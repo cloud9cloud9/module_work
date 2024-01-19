@@ -7,7 +7,6 @@ import com.opencsv.bean.StatefulBeanToCsvBuilder;
 import com.opencsv.exceptions.CsvDataTypeMismatchException;
 import com.opencsv.exceptions.CsvRequiredFieldEmptyException;
 import org.example.Entity.Operation;
-import org.example.Entity.User;
 import org.example.util.PropertiesUtil;
 
 import java.io.IOException;

@@ -31,13 +31,13 @@ public class Operation {
     private String name;
 
     @Enumerated(EnumType.STRING)
-    @Column(name = "operation_type")
+    @Column(name = "operation_type", nullable = false)
     @CsvBindByName(column = "operation_type")
     @CsvBindByPosition(position = 2)
     private OperationType operationType;
 
     @Enumerated(EnumType.STRING)
-    @Column(name = "expense_category")
+    @Column(name = "expense_category", nullable = false)
     @CsvBindByName(column = "expense_category")
     @CsvBindByPosition(position = 3)
     private OperationType.ExpenseCategory expenseCategory;

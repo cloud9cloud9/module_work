@@ -1,7 +1,1 @@
-"1","buy a coffe","EXPENSE","FOOD","2024-01-15 18:10:54","1,000.00","Account(id=1, balance=9100, name=visa_card)","Account(id=3, balance=2500, name=nova_post_card)"
-"5","Buying mobilephone","EXPENSE","ENTERTAINMENT","2024-01-15 18:50:12","300.00","Account(id=1, balance=9100, name=visa_card)","Account(id=2, balance=10000, name=master_card)"
-"6","Buying mobilephone","EXPENSE","ENTERTAINMENT","2024-01-15 18:50:46","300.00","Account(id=1, balance=9100, name=visa_card)","Account(id=2, balance=10000, name=master_card)"
-"7","Buying mobilephone","EXPENSE","ENTERTAINMENT","2024-01-15 18:51:27","300.00","Account(id=1, balance=9100, name=visa_card)","Account(id=2, balance=10000, name=master_card)"
-"8","Purchase Food","EXPENSE","FOOD","2023-01-01 12:30:00","50.00","Account(id=1, balance=9100, name=visa_card)","Account(id=6, balance=2000, name=Investment Account)"
-"27","Transfer Restaurant","EXPENSE","RESTAURANT","2024-08-25 17:00:00","70.00","Account(id=1, balance=9100, name=visa_card)","Account(id=6, balance=2000, name=Investment Account)"
-"47","Purchase Medicine","EXPENSE","MEDICINE","2026-04-22 11:00:00","30.00","Account(id=1, balance=9100, name=visa_card)","Account(id=6, balance=2000, name=Investment Account)"
+"2","Purchase Food","EXPENSE","FOOD","2023-01-01 12:30:00","50.00","Account(id=1, balance=6880, name=nova_post_card)","Account(id=6, balance=1200, name=Travel Fund)"

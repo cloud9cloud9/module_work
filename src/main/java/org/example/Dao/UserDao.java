@@ -2,7 +2,6 @@ package org.example.Dao;
 
 
 import jakarta.persistence.*;
-import org.example.Entity.Account;
 import org.example.Entity.User;
 import org.example.util.Util;
 
@@ -13,7 +12,7 @@ import java.util.Optional;
 import java.util.concurrent.atomic.AtomicLong;
 
 
-public class UserDao extends GenericDao<User>{
+public class UserDao extends GenericDao<User> implements Dao<User>{
     private final EntityManager em;
 
     public UserDao() {

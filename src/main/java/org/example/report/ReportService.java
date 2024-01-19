@@ -3,21 +3,23 @@ package org.example.report;
 import org.example.report.strategy.CsvStrategy;
 import java.util.List;
 
-public class ReportService {
+public class ReportService<T> {
 
-   private CsvStrategy csvStrategy;
+    private CsvStrategy<T> csvStrategy;
 
-    private ReportService(CsvStrategy csvStrategy) {
+    private ReportService(CsvStrategy<T> csvStrategy) {
         this.csvStrategy = csvStrategy;
     }
-    public static ReportService createReportService(CsvStrategy csvStrategy){
-        return new ReportService(csvStrategy);
+
+    public static <T> ReportService<T> createReportService(CsvStrategy<T> csvStrategy) {
+        return new ReportService<>(csvStrategy);
     }
 
-    public <T> void write(List<T> dataList){
+    public void write(List<T> dataList) {
         csvStrategy.writeToCsv(dataList);
     }
-    public<T> List<T> read (){
+
+    public List<T> read() {
         return csvStrategy.readFromCsv();
     }
 }

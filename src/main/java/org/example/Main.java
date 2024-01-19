@@ -13,6 +13,10 @@ import org.example.report.strategy.AccountCsvStrategy;
 import org.example.report.strategy.CsvStrategy;
 import org.example.report.strategy.OperationCsvStrategy;
 import org.example.report.strategy.UserCsvStrategy;
+import org.example.security.UserManager;
+
+import org.example.security.state.NotAuthenticatedState;
+import org.example.security.state.UserState;
 
 import java.math.BigDecimal;
 import java.time.LocalDateTime;
@@ -20,29 +24,8 @@ import java.util.Optional;
 
 public class Main {
     public static void main(String[] args) {
-        User user = User.builder()
-                .userName("nikol")
-                .password("qwertyqwerty")
-                .build();
-        UserDao userDao = new UserDao();
-//        userDao.save(user);
-
-        Account account = Account.builder()
-                .name("nova_post_card")
-                .balance(7880)
-                .user(user)
-                .build();
-        Account account1 = new Account();
-        Account account2 = Account.builder()
-                .name("other_card")
-                .balance(10000)
-                .user(user)
-                .build();
-
-
         AccountDao accountDao = new AccountDao();
-        //Optional<Account> byId = accountDao.findById(2L);
-//        accountDao.save(account);
+        UserDao userDao = new UserDao();
 
         OperationDao operationDao = new OperationDao();
         Operation operation = Operation.builder()
@@ -51,32 +34,13 @@ public class Main {
                 .expenseCategory(OperationType.ExpenseCategory.ENTERTAINMENT)
                 .createdAt(LocalDateTime.now())
                 .build();
-//
-//        accountDao.createNewAccount(Account.builder()
-//                .balance(2500)
-//                .name("nova_post_card")
-//                .build(), 1L);
 
-//        operationDao.createNewOperation(1L, 2L, 300, operation);
-//        System.out.println(operationDao.getOperationsByAccountId(4L));
-//        System.out.println(accountDao.getAccountByUserId(1L));
-//        System.out.println("sort by amount " + operationDao.sortByAmount(1L, false));
-//
-//        System.out.println();
-//        System.out.println("max or min" + operationDao.findExtremeOperationByAccountId(1L, true));
-//        System.out.println();
-        System.out.println("find extreeme" + operationDao.findExtremeOperationByAccountId(1L, true));
-//        System.out.println("find extreme by userId" + operationDao.findExtremeOperationByUserId(1L, true));
-//        System.out.println("filter " + operationDao.filterOperationByCategory(1L, OperationType.ExpenseCategory.MEDICINE));
-//        System.out.println("filter by oper type " + operationDao.filterOperationByOperationType(1L, OperationType.EXPENSE));
-
-        System.out.println("fatch by amout over that " + operationDao.fetchOperationsWithAmountGreaterThan(1L, 299));
+        Account account3 = Account.builder().balance(1000).name("new_card").build();
 
 
-        ReportService reportService = ReportService.createReportService(new OperationCsvStrategy());
-        reportService.write(operationDao.filterOperationByOperationType(1l, OperationType.EXPENSE));
-//        System.out.println(reportService.read("C:\\Users\\Vladick\\IdeaProjects\\modulework\\src" +
-//                "\\main\\resources\\account.csv"));
-
+        UserManager userManager = UserManager.builder().userDao(userDao).build();
+        userManager.setCurrentUser(1L);
+        UserState userState = userManager.setState();
+        userManager.sortAccountByBalance(true);
     }
 }
