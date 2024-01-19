@@ -87,6 +87,12 @@ public class UserManager {
     public List<Account> sortAccountByBalance(boolean ascending){
         return currentState.sortAccountByBalance(ascending);
     }
+    public List<Operation> findExtremeOperationThisUser(boolean ascending){
+        return currentState.findExtremeOperationThisUser(ascending);
+    }
+    public List<Operation> getOperationsThisUser(){
+        return currentState.getOperationsThisUser();
+    }
 
     public UserState setState() {
         try (Scanner scanner = new Scanner(System.in)) {
@@ -126,7 +132,6 @@ public class UserManager {
     }
 
     public User getCurrentUser() {
-        System.out.println(currentUser);
         return currentUser;
     }
 

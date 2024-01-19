@@ -16,6 +16,12 @@ public class BlockedState implements UserState {
         System.out.println("Акаунт заблокований. Зверніться до служби підтримки.");
     }
 
+    @SneakyThrows
+    @Override
+    public void setCurrentUser(User user) {
+        throw new AuthenticationException("Акаунт заблоковано!");
+    }
+
     @Override
     public void performOperations() {
         System.out.println("Акаунт заблокований. Зверніться до служби підтримки.");
@@ -39,6 +45,11 @@ public class BlockedState implements UserState {
 
     @Override
     public List<Operation> getOperationsThisAccount() {
+        return null;
+    }
+
+    @Override
+    public List<Operation> getOperationsThisUser() {
         return null;
     }
 
@@ -84,6 +95,11 @@ public class BlockedState implements UserState {
 
     @Override
     public List<Account> sortAccountByBalance(boolean ascending) {
+        return null;
+    }
+
+    @Override
+    public List<Operation> findExtremeOperationThisUser(boolean ascending) {
         return null;
     }
 

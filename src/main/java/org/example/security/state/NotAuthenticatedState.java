@@ -85,6 +85,11 @@ public class NotAuthenticatedState extends GenericDao implements UserState {
     }
 
     @Override
+    public List<Operation> getOperationsThisUser() {
+        return null;
+    }
+
+    @Override
     public List<Operation> fetchOperationsWithAmountGreaterThan(long amount) {
         return null;
     }
@@ -127,5 +132,16 @@ public class NotAuthenticatedState extends GenericDao implements UserState {
     @Override
     public List<Account> sortAccountByBalance(boolean ascending) {
         return null;
+    }
+
+    @Override
+    public List<Operation> findExtremeOperationThisUser(boolean ascending) {
+        return null;
+    }
+
+    @SneakyThrows
+    @Override
+    public void setCurrentUser(User user) {
+        throw new AuthenticationException("Акаунт заблоковано!");
     }
 }

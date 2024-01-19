@@ -22,12 +22,13 @@ public class AuthenticatedState extends GenericDao<User> implements UserState {
     private ReportService<Operation> operationReportService = ReportService.createReportService(new OperationCsvStrategy());
     private ReportService<Account> accountReportService = ReportService.createReportService(new AccountCsvStrategy());
 
-    private User currentUser;
+    private Long selectedUserId;
     private UserManager userManager;
     private Long selectedAccountId;
+
     public AuthenticatedState(UserManager userManager) {
         this.userManager = userManager;
-        this.currentUser = userManager.getCurrentUser();
+        this.selectedUserId = userManager.getCurrentUser().getId();
     }
 
     public AuthenticatedState() {
@@ -36,6 +37,11 @@ public class AuthenticatedState extends GenericDao<User> implements UserState {
     @Override
     public void logIntoTheUser() {
         System.out.println("Ви успішно увійшли у акаунт");
+    }
+
+    @Override
+    public void setCurrentUser(User user) {
+        selectedUserId = user.getId();
     }
 
     @Override
@@ -58,15 +64,17 @@ public class AuthenticatedState extends GenericDao<User> implements UserState {
             System.out.println("Акаунт не знайдено.");
         }
     }
+
     @Override
     public void createNewAccount(Account account) {
         inSession(em -> {
-            User user = em.find(User.class, currentUser.getId());
+            User user = em.find(User.class, selectedUserId);
             account.setUser(user);
             em.persist(account);
             System.out.println("Успішно створено нову карту!");
         });
     }
+
     @Override
     public void createNewOperation(Long toAccountId, long amount, Operation operation) {
         inSession(em -> {
@@ -87,6 +95,7 @@ public class AuthenticatedState extends GenericDao<User> implements UserState {
             em.persist(operation);
         });
     }
+
     @Override
     public List<Operation> getOperationsThisAccount() {
         List<Operation> operationList = new ArrayList<>();
@@ -99,6 +108,26 @@ public class AuthenticatedState extends GenericDao<User> implements UserState {
         operationReportService.write(operationList);
         return operationList;
     }
+
+    @Override
+    public List<Operation> getOperationsThisUser() {
+        List<Operation> operationList = new ArrayList<>();
+        inSession(em -> {
+            List<Account> accounts = em.createQuery("SELECT a FROM Account a WHERE a.user.id = :userId", Account.class)
+                    .setParameter("userId", selectedUserId)
+                    .getResultList();
+
+            for (Account account : accounts) {
+                List<Operation> operations = em.createQuery("SELECT o FROM Operation o WHERE o.fromAccount = :account", Operation.class)
+                        .setParameter("account", account)
+                        .getResultList();
+                operationList.addAll(operations);
+            }
+        });
+        operationReportService.write(operationList);
+        return operationList;
+    }
+
     @Override
     public List<Operation> fetchOperationsWithAmountGreaterThan(long amount) {
         List<Operation> operationList = new ArrayList<>();
@@ -113,6 +142,7 @@ public class AuthenticatedState extends GenericDao<User> implements UserState {
         operationReportService.write(operationList);
         return operationList;
     }
+
     @Override
     public List<Operation> filterOperationByOperationType(OperationType type) {
         List<Operation> operationList = new ArrayList<>();
@@ -126,6 +156,7 @@ public class AuthenticatedState extends GenericDao<User> implements UserState {
         operationReportService.write(operationList);
         return operationList;
     }
+
     @Override
     public List<Operation> filterOperationByCategory(OperationType.ExpenseCategory category) {
         List<Operation> operationList = new ArrayList<>();
@@ -139,6 +170,7 @@ public class AuthenticatedState extends GenericDao<User> implements UserState {
         operationReportService.write(operationList);
         return operationList;
     }
+
     @Override
     public List<Operation> sortByAmount(boolean ascending) {
         List<Operation> operationList = getOperationsThisAccount();
@@ -152,8 +184,9 @@ public class AuthenticatedState extends GenericDao<User> implements UserState {
         operationReportService.write(operationList);
         return operationList;
     }
+
     @Override
-    public List<Operation> findExtremeOperationOfThisAccount(boolean findMax){
+    public List<Operation> findExtremeOperationOfThisAccount(boolean findMax) {
         String queryString = findMax ?
                 "SELECT o FROM Operation o WHERE o.fromAccount.id = :accountId ORDER BY o.amount DESC" :
                 "SELECT o FROM Operation o WHERE o.fromAccount.id = :accountId ORDER BY o.amount ASC";
@@ -168,8 +201,9 @@ public class AuthenticatedState extends GenericDao<User> implements UserState {
         operationReportService.write(operationList);
         return operationList;
     }
+
     @Override
-    public List<Operation> sortByCreatedAt(boolean ascending){
+    public List<Operation> sortByCreatedAt(boolean ascending) {
         String queryString = ascending ?
                 "SELECT o FROM Operation o WHERE o.fromAccount.id = :accountId ORDER BY o.createdAt DESC" :
                 "SELECT o FROM Operation o WHERE o.fromAccount.id = :accountId ORDER BY o.createdAt ASC";
@@ -183,8 +217,9 @@ public class AuthenticatedState extends GenericDao<User> implements UserState {
         operationReportService.write(operationList);
         return operationList;
     }
+
     @Override
-    public List<Operation> findOperationsByDateRange(LocalDateTime startDate, LocalDateTime endDate){
+    public List<Operation> findOperationsByDateRange(LocalDateTime startDate, LocalDateTime endDate) {
         String hql = "SELECT o FROM Operation o WHERE o.fromAccount.id = :accountId AND o.createdAt BETWEEN :startDate AND :endDate";
         List<Operation> operationList = new ArrayList<>();
         inSession(em -> {
@@ -201,34 +236,55 @@ public class AuthenticatedState extends GenericDao<User> implements UserState {
 
     @Override
     public List<Account> getAllAccount() {
-        Long userId = currentUser.getId();
         List<Account> accountList = new ArrayList<>();
         inSession(em -> {
             List<Account> accounts = em.createQuery("SELECT a FROM Account a WHERE a.user.id = :userId", Account.class)
-                    .setParameter("userId", userId)
+                    .setParameter("userId", selectedUserId)
                     .getResultList();
             accountList.addAll(accounts);
-            for (Account account : accounts){
-                System.out.println("Id" + account.getId() + " Name " + account.getName());
+            for (Account account : accounts) {
+                System.out.println("Id accounts: " + account.getId() + " , Name: " + account.getName());
             }
         });
+        accountReportService.write(accountList);
         return accountList;
     }
 
     @Override
     public List<Account> sortAccountByBalance(boolean ascending) {
-        Long userId = currentUser.getId();
         List<Account> accountList = new ArrayList<>();
         String queryString = ascending ?
                 "SELECT a FROM Account a WHERE a.user.id = :userId ORDER BY a.balance DESC" :
                 "SELECT a FROM Account a WHERE a.user.id = :userId ORDER BY a.balance ASC";
         inSession(em -> {
             List<Account> accounts = em.createQuery(queryString, Account.class)
-                    .setParameter("userId", userId)
+                    .setParameter("userId", selectedUserId)
                     .getResultList();
             accountList.addAll(accounts);
         });
         accountReportService.write(accountList);
         return accountList;
+    }
+
+    @Override
+    public List<Operation> findExtremeOperationThisUser(boolean ascending) {
+        List<Operation> operationList = new ArrayList<>();
+        inSession(em -> {
+            List<Account> accounts = em.createQuery("SELECT o FROM Account o WHERE o.user.id = :userId", Account.class)
+                    .setParameter("userId", selectedUserId)
+                    .getResultList();
+            for (Account account : accounts) {
+                String queryString = ascending ?
+                        "SELECT o FROM Operation o WHERE o.fromAccount = :account ORDER BY o.amount DESC" :
+                        "SELECT o FROM Operation o WHERE o.fromAccount = :account ORDER BY o.amount ASC";
+                List<Operation> operations = em.createQuery(queryString, Operation.class)
+                        .setParameter("account", account)
+                        .setMaxResults(1)
+                        .getResultList();
+                operationList.addAll(operations);
+            }
+        });
+        operationReportService.write(operationList);
+        return operationList;
     }
 }

@@ -1,1 +1,5 @@
 "2","Purchase Food","EXPENSE","FOOD","2023-01-01 12:30:00","50.00","Account(id=1, balance=6880, name=nova_post_card)","Account(id=6, balance=1200, name=Travel Fund)"
+"21","Transfer Restaurant","EXPENSE","RESTAURANT","2024-08-25 17:00:00","70.00","Account(id=1, balance=6880, name=nova_post_card)","Account(id=6, balance=1200, name=Travel Fund)"
+"31","Deposit Rent","INCOME","RENT","2025-06-25 11:30:00","120.00","Account(id=1, balance=6880, name=nova_post_card)","Account(id=6, balance=1200, name=Travel Fund)"
+"41","Purchase Medicine","EXPENSE","MEDICINE","2026-04-22 11:00:00","30.00","Account(id=1, balance=6880, name=nova_post_card)","Account(id=6, balance=1200, name=Travel Fund)"
+"44","Buying mobilephone","EXPENSE","ENTERTAINMENT","2024-01-19 13:47:02","1,000.00","Account(id=1, balance=6880, name=nova_post_card)","Account(id=3, balance=2500, name=Savings Account)"
