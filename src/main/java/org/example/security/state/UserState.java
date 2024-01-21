@@ -27,4 +27,8 @@ public interface UserState {
     List<Account> getAllAccount();
     List<Account> sortAccountByBalance(boolean ascending);
     List<Operation> findExtremeOperationThisUser(boolean ascending);
+    List<Double> getTotalBalanceOfUser();
+    List<Double> getTotalExpense();
+    List<Double> getTotalIncome();
+
 }

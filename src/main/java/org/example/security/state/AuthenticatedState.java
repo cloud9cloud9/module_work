@@ -1,5 +1,6 @@
 package org.example.security.state;
 
+import jakarta.persistence.TypedQuery;
 import org.example.Dao.GenericDao;
 import org.example.Entity.Account;
 import org.example.Entity.Operation;
@@ -7,6 +8,7 @@ import org.example.Entity.OperationType;
 import org.example.Entity.User;
 import org.example.report.ReportService;
 import org.example.report.strategy.AccountCsvStrategy;
+import org.example.report.strategy.DoubleCsvStrategy;
 import org.example.report.strategy.OperationCsvStrategy;
 import org.example.report.strategy.UserCsvStrategy;
 import org.example.security.UserManager;
@@ -21,6 +23,7 @@ public class AuthenticatedState extends GenericDao<User> implements UserState {
     private ReportService<User> userReportService = ReportService.createReportService(new UserCsvStrategy());
     private ReportService<Operation> operationReportService = ReportService.createReportService(new OperationCsvStrategy());
     private ReportService<Account> accountReportService = ReportService.createReportService(new AccountCsvStrategy());
+    private ReportService<Double> doubleReportService = ReportService.createReportService(new DoubleCsvStrategy());
 
     private Long selectedUserId;
     private UserManager userManager;
@@ -286,5 +289,54 @@ public class AuthenticatedState extends GenericDao<User> implements UserState {
         });
         operationReportService.write(operationList);
         return operationList;
+    }
+
+    /**
+     * Програма може надавати можливість генерувати звіти про фінансову активність,
+     * зокрема, статистику д	оходів і витрат, розподіл операцій за категоріями,
+     * загальний баланс тощо.
+     */
+    @Override
+    public List<Double> getTotalBalanceOfUser() {
+        List<Double> totalBalance = new ArrayList<>();
+        inSession(em -> {
+            List<Double> doubleList = em.createQuery(
+                            "SELECT CAST(SUM(a.balance) AS DOUBLE) FROM Account a WHERE a.user.id = :userId",
+                            Double.class)
+                    .setParameter("userId", selectedUserId)
+                    .getResultList();
+            totalBalance.addAll(doubleList);
+        });
+        doubleReportService.write(totalBalance);
+        return totalBalance;
+    }
+
+    @Override
+    public List<Double> getTotalExpense() {
+        List<Double> totalExpense = new ArrayList<>();
+        inSession(em -> {
+            List<Double> expense = em.createQuery(
+                            "SELECT CAST(SUM(o.amount) AS DOUBLE) FROM User u JOIN u.accountList a JOIN a.operationList o " +
+                                    "WHERE u.id = :userId AND o.operationType = 'EXPENSE'", Double.class)
+                    .setParameter("userId", selectedUserId)
+                    .getResultList();
+            totalExpense.addAll(expense);
+        });
+        doubleReportService.write(totalExpense);
+        return totalExpense;
+    }
+    @Override
+    public List<Double> getTotalIncome() {
+        List<Double> totalIncome = new ArrayList<>();
+        inSession(em -> {
+            List<Double> income = em.createQuery(
+                            "SELECT CAST(SUM(o.amount) AS DOUBLE) FROM User u JOIN u.accountList a JOIN a.operationList o " +
+                                    "WHERE u.id = :userId AND o.operationType = 'INCOME'", Double.class)
+                    .setParameter("userId", selectedUserId)
+                    .getResultList();
+            totalIncome.addAll(income);
+        });
+        doubleReportService.write(totalIncome);
+        return totalIncome;
     }
 }

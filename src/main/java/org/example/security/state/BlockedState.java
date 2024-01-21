@@ -103,4 +103,19 @@ public class BlockedState implements UserState {
         return null;
     }
 
+    @Override
+    public List<Double> getTotalBalanceOfUser() {
+        return null;
+    }
+
+    @Override
+    public List<Double> getTotalExpense() {
+        return null;
+    }
+
+    @Override
+    public List<Double> getTotalIncome() {
+        return null;
+    }
+
 }

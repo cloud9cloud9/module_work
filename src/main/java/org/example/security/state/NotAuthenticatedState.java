@@ -139,6 +139,21 @@ public class NotAuthenticatedState extends GenericDao implements UserState {
         return null;
     }
 
+    @Override
+    public List<Double> getTotalBalanceOfUser() {
+        return null;
+    }
+
+    @Override
+    public List<Double> getTotalExpense() {
+        return null;
+    }
+
+    @Override
+    public List<Double> getTotalIncome() {
+        return null;
+    }
+
     @SneakyThrows
     @Override
     public void setCurrentUser(User user) {

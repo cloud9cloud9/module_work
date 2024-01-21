@@ -93,6 +93,15 @@ public class UserManager {
     public List<Operation> getOperationsThisUser(){
         return currentState.getOperationsThisUser();
     }
+    public List<Double> getTotalBalanceOfUser(){
+        return currentState.getTotalBalanceOfUser();
+    }
+    public List<Double> getTotalExpense(){
+        return currentState.getTotalExpense();
+    }
+    public List<Double> getTotalIncome(){
+        return currentState.getTotalIncome();
+    }
 
     public UserState setState() {
         try (Scanner scanner = new Scanner(System.in)) {

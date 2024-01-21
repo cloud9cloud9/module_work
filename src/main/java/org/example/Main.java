@@ -8,7 +8,9 @@ import org.example.Entity.Operation;
 import org.example.Entity.OperationType;
 import org.example.security.UserManager;
 import org.example.security.state.UserState;
+
 import java.time.LocalDateTime;
+import java.time.Month;
 
 public class Main {
     public static void main(String[] args) {
@@ -30,6 +32,9 @@ public class Main {
         userManager.setCurrentUser(2L);
         UserState userState = userManager.setState();
         userState.setCurrentUser(userManager.getCurrentUser());
+        userManager.logIntoAccount(1L);
         userManager.getOperationsThisUser();
+        //qwertyqwerty
+        userManager.getTotalIncome();
     }
 }
