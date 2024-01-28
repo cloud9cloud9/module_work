@@ -3,21 +3,14 @@ package org.example.Dao;
 
 import jakarta.persistence.*;
 import org.example.Entity.User;
-import org.example.util.Util;
-
-
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 import java.util.concurrent.atomic.AtomicLong;
+import java.util.concurrent.atomic.AtomicReference;
 
 
 public class UserDao extends GenericDao<User> implements Dao<User>{
-    private final EntityManager em;
-
-    public UserDao() {
-        this.em = Util.getEntityManager();
-    }
 
     @Override
     public User save(User user) {
@@ -27,7 +20,14 @@ public class UserDao extends GenericDao<User> implements Dao<User>{
 
     @Override
     public Optional<User> findById(Long id) {
-        return Optional.ofNullable(em.find(User.class, id));
+        AtomicReference<User> user = new AtomicReference<>();
+        inSession(em -> {
+            Query query = em.createQuery("select u from User u where u.id = :id");
+            query.setParameter("id", id);
+            List<User> users = query.getResultList();
+            user.set(users.stream().findFirst().orElse(null));
+        });
+        return Optional.ofNullable(user.get());
     }
 
     public List<User> findAllByUserName(String userName) {

@@ -1,18 +1,14 @@
 package org.example.Dao;
 
-import jakarta.persistence.EntityManager;
+import jakarta.persistence.Query;
 import org.example.Entity.Account;
-import org.example.util.Util;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
+import java.util.concurrent.atomic.AtomicReference;
 
 public class AccountDao extends GenericDao<Account> implements Dao<Account> {
-    private final EntityManager em;
 
-    public AccountDao() {
-        this.em = Util.getEntityManager();
-    }
 
     @Override
     public Account save(Account account) {
@@ -22,7 +18,14 @@ public class AccountDao extends GenericDao<Account> implements Dao<Account> {
 
     @Override
     public Optional<Account> findById(Long id) {
-        return Optional.ofNullable(em.find(Account.class, id));
+        AtomicReference<Account> account = new AtomicReference<>();
+        inSession(em -> {
+            Query query = em.createQuery("select u from Account u where u.id = :id");
+                    query.setParameter("id", id);
+            List<Account> accounts = query.getResultList();
+            account.set(accounts.stream().findFirst().orElse(null));
+        });
+        return Optional.ofNullable(account.get());
     }
 
     @Override

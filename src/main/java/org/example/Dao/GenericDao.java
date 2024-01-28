@@ -2,6 +2,7 @@ package org.example.Dao;
 
 import jakarta.persistence.EntityManager;
 import jakarta.persistence.EntityTransaction;
+import org.example.util.Util;
 
 import java.util.function.Consumer;
 
@@ -11,7 +12,7 @@ public abstract class GenericDao<T> {
     private final EntityManager em;
 
     public GenericDao() {
-        this.em = getEntityManager();
+        this.em = Util.getEntityManager();
     }
 
     public void inSession(Consumer<EntityManager> entityManagerConsumer) {

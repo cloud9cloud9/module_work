@@ -1,17 +1,12 @@
 package org.example.Dao;
 
-import jakarta.persistence.EntityManager;
+import jakarta.persistence.Query;
 import org.example.Entity.Operation;
-import org.example.util.Util;
 import java.util.*;
+import java.util.concurrent.atomic.AtomicReference;
 
 
 public class OperationDao extends GenericDao<Operation> implements Dao<Operation> {
-    private final EntityManager em;
-
-    public OperationDao() {
-        this.em = Util.getEntityManager();
-    }
 
     @Override
     public Operation save(Operation operation) {
@@ -21,7 +16,14 @@ public class OperationDao extends GenericDao<Operation> implements Dao<Operation
 
     @Override
     public Optional<Operation> findById(Long id) {
-        return Optional.ofNullable(em.find(Operation.class, id));
+        AtomicReference<Operation> operation = new AtomicReference<>();
+        inSession(em -> {
+            Query query = em.createQuery("select u from Operation u where u.fromAccount.id = :id");
+            query.setParameter("id", id);
+            List<Operation> operations = query.getResultList();
+            operation.set(operations.stream().findFirst().orElse(null));
+        });
+        return Optional.ofNullable(operation.get());
     }
 
     @Override

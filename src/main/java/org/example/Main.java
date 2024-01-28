@@ -11,6 +11,7 @@ import org.example.security.state.UserState;
 
 import java.time.LocalDateTime;
 import java.time.Month;
+import java.util.Optional;
 
 public class Main {
     public static void main(String[] args) {
@@ -27,6 +28,7 @@ public class Main {
                 .build();
 
         Account account3 = Account.builder().balance(10000).name("new_card222").build();
+//        System.out.println(userDao.findById(5L));
 
         UserManager userManager = UserManager.builder().userDao(userDao).build();
         userManager.setCurrentUser(2L);
@@ -35,6 +37,6 @@ public class Main {
         userManager.logIntoAccount(1L);
         userManager.getOperationsThisUser();
         //qwertyqwerty
-        userManager.getTotalIncome();
+        userManager.getTotalBalanceOfUser();
     }
 }
